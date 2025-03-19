@@ -1,4 +1,7 @@
-GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end){
+library(nctools) # install_github("...")
+source("temporary_functions.R")
+
+GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end, tempdir=NULL) {
   
   library(nctools)
   library(ncdf4)
@@ -7,12 +10,23 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_unlim_v2.R")
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_subset_v2.R")
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_rcat_v2.R")
+
+  if(is.null(tempdir)) tempdir = tempdir()
+    
+  # check = requireNamespace("nctools")
+  # if(!check) stop("You need to install the 'nctools' package from ...")
+  # nctools::nc_apply()
+  # 
+  # library(nctools)
+  # nc_apply()
   
   if (is.null(newvarid) || missing(newvarid)) {
     newvarid <- varid
   }
   
   dir.create(paste0(outputDir,"temp"))
+  # on.exit(unlink(x = paste0(outputDir,"temp"), recursive = TRUE))
+  
   varid_name=varid
   GLORYS=paste0("GLO12v1_",ifelse(varid_name=="thetao","sst",varid),"_temp")
   count = 1
@@ -106,9 +120,11 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   nc_rcat_v2(filenames = paste0(unlim_path,list_filename),varid=newvarid,output)
   message("Succes !! Concatenation for the variable : ",varid)
 
-  unlink(x = paste0(outputDir,"temp"), recursive = TRUE)
-  unlink(x = paste0(outputDir,"temp_unlim"), recursive = TRUE)
-  unlink(x = paste0(outputDir,"temp_spa"), recursive = TRUE)
+  # unlink(x = paste0(outputDir,"temp"), recursive = TRUE)
+  # unlink(x = paste0(outputDir,"temp_unlim"), recursive = TRUE)
+  # unlink(x = paste0(outputDir,"temp_spa"), recursive = TRUE)
+  
+  return(invisible(TRUE))
   
 }
  
