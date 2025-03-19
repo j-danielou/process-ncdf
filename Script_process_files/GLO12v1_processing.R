@@ -1,12 +1,12 @@
-library(nctools)
-library(ncdf4)
-source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_extract_v2.R")
-source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_changePrimeMeridian_v2.R")
-source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_unlim_v2.R")
-source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_subset_v2.R")
-source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_rcat_v2.R")
-
 GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end){
+  
+  library(nctools)
+  library(ncdf4)
+  source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_extract_v2.R")
+  source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_changePrimeMeridian_v2.R")
+  source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_unlim_v2.R")
+  source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_subset_v2.R")
+  source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_rcat_v2.R")
   
   if (is.null(newvarid) || missing(newvarid)) {
     newvarid <- varid
