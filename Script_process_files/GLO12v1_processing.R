@@ -13,18 +13,18 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   }
   
   dir.create(paste0(outputDir,"temp"))
-  on.exit(unlink(x = paste0(outputDir,"temp"), recursive = TRUE))
   varid_name=varid
   GLORYS=paste0("GLO12v1_",ifelse(varid_name=="thetao","sst",varid),"_temp")
-  
+  count = 1
   
   for (filename in list_filename){
     data = nc_open(filename = paste0(path,filename))
     message("Start of Variable Extraction for the : ", filename)
-    extracted_part <- sub(".*_(\\d{4})(\\d{2})\\.nc$", "\\1_\\2", filename)
-    output=paste0(outputDir,"temp/",GLORYS,"_",extracted_part,".nc" )
+    #extracted_part <- sub(".*_(\\d{4})(\\d{2})\\.nc$", "\\1_\\2", filename)
+    output=paste0(outputDir,"temp/",GLORYS,"_",count,".nc" )
     nc_extract_v2(paste0(path,filename),varid,output)
     message("Variable Extracted for the : ", filename)
+    count= count + 1
   }
   
   if (!meridian == "center"){
@@ -96,9 +96,6 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   }
 
  
-  on.exit(unlink(x = paste0(outputDir,"temp_spa"), recursive = TRUE))
-  on.exit(unlink(x = paste0(outputDir,"temp_unlim"), recursive = TRUE))
-  
    
   ###   Concatenation for a Variable for GLORYS files (.nc)  ###
   
@@ -109,6 +106,9 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   nc_rcat_v2(filenames = paste0(unlim_path,list_filename),varid=newvarid,output)
   message("Succes !! Concatenation for the variable : ",varid)
 
+  unlink(x = paste0(outputDir,"temp"), recursive = TRUE)
+  unlink(x = paste0(outputDir,"temp_unlim"), recursive = TRUE)
+  unlink(x = paste0(outputDir,"temp_spa"), recursive = TRUE)
   
 }
  
