@@ -1,10 +1,8 @@
-library(nctools) # install_github("...")
-source("temporary_functions.R")
+library(nctools) # install_github("roliveros-ramos/nctools")
+#source("temporary_functions.R")
 
 GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end, tempdir=NULL) {
   
-  library(nctools)
-  library(ncdf4)
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_extract_v2.R")
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_changePrimeMeridian_v2.R")
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_unlim_v2.R")
@@ -16,7 +14,11 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   # check = requireNamespace("nctools")
   # if(!check) stop("You need to install the 'nctools' package from ...")
   # nctools::nc_apply()
-  # 
+  # nctools::nc_extract_v2
+  # nctools::nc_changePrimeMeridian_v2
+  # nctools::nc_subset_v2
+  # nctools::nc_unlim_v2
+  #
   # library(nctools)
   # nc_apply()
   
@@ -24,110 +26,114 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
     newvarid <- varid
   }
   
-  dir.create(paste0(outputDir,"temp"))
-  # on.exit(unlink(x = paste0(outputDir,"temp"), recursive = TRUE))
+  dir.create(file.path(tempdir,"temp"))
+  on.exit(unlink(x = file.path(tempdir,"temp"), recursive = TRUE))
+  folder_path = file.path(tempdir,"temp")
+  
+  dir.create(file.path(folder_path,"extract"))
+  output_path = file.path(folder_path,"extract")
   
   varid_name=varid
-  GLORYS=paste0("GLO12v1_",ifelse(varid_name=="thetao","sst",varid),"_temp")
   count = 1
   
   for (filename in list_filename){
-    data = nc_open(filename = paste0(path,filename))
     message("Start of Variable Extraction for the : ", filename)
-    #extracted_part <- sub(".*_(\\d{4})(\\d{2})\\.nc$", "\\1_\\2", filename)
-    output=paste0(outputDir,"temp/",GLORYS,"_",count,".nc" )
-    nc_extract_v2(paste0(path,filename),varid,output)
+    GLORYS=paste0("GLO12v1_",ifelse(varid_name=="thetao","sst",varid),"_temp")
+    GLORYS = paste0(GLORYS,"_",count,".nc")
+    output= file.path(output_path,GLORYS)
+    nc_extract_v2(file.path(path,filename),varid,output)
     message("Variable Extracted for the : ", filename)
     count= count + 1
   }
   
   if (!meridian == "center"){
     
-    newpath = paste0(outputDir,"temp/")
-    list_filename = list.files(path=newpath)
+    input_path = output_path
+    list_filename = list.files(path=input_path)
     
     for (filename in list_filename){
       message("Start Meridian Change for : ", filename)
       
-      nc_changePrimeMeridian_v2(filename = paste0(newpath,filename), varid=varid, primeMeridian = "left", overwrite = TRUE)
+      nc_changePrimeMeridian_v2(filename = file.path(input_path,filename), varid=varid, primeMeridian = "left", overwrite = TRUE)
       
       message("Succes Meridian Change to left for : ", filename)
     }
   }
   
   else{
-    newpath = paste0(outputDir,"temp/")
-    list_filename = list.files(path=newpath)
+    input_path = output_path
+    list_filename = list.files(path=input_path)
     
     for (filename in list_filename){
       message("Start Meridian Change for : ", filename)
       
-      nc_changePrimeMeridian_v2(filename = paste0(newpath,filename), varid=varid, primeMeridian = "center", overwrite = TRUE)
+      nc_changePrimeMeridian_v2(filename = file.path(input_path,filename), varid=varid, primeMeridian = "center", overwrite = TRUE)
       
       message("Succes Meridian Change to left for : ", filename)
     }
   }
   
   if(!domain == "global" ){
-    dir.create(paste0(outputDir,"temp_spa"))
-    newpath = paste0(outputDir,"temp/")
-    endpath = paste0(outputDir,"temp_spa/")
-    list_filename = list.files(path=newpath)
+    dir.create(file.path(folder_path,"subset"))
+    output_path = file.path(folder_path,"subset")
+
+    list_filename = list.files(path= input_path)
     
     for (filename in list_filename){
       message("Start of the Spatial Subsetting for : ", filename)
       
-      nc_subset_v2(filename=paste0(newpath,filename), varid=varid, output = paste0(endpath,filename), newvarid=newvarid, compression = 9, latitude=c(-70,10), longitude=c(120,300), depth =c(0,0.5))
+      nc_subset_v2(filename=file.path(input_path,filename), varid=varid, output = file.path(output_path,filename), newvarid=newvarid, compression = 9, latitude=c(-70,10), longitude=c(120,300), depth =c(0,0.5))
       
       message("Succes Spatial Subsetting for : ", filename)
     }
   }
   else{
-    dir.create(paste0(outputDir,"temp_spa"))
-    newpath = paste0(outputDir,"temp/")
-    endpath = paste0(outputDir,"temp_spa/")
-    list_filename = list.files(path=newpath)
+    dir.create(file.path(folder_path,"subset"))
+    output_path = file.path(folder_path,"subset")
+    
+    list_filename = list.files(path= input_path)
     
     for (filename in list_filename){
       message("Start of the Spatial Subsetting (upper layer) for : ", filename)
       
-      nc_subset_v2(filename=paste0(newpath,filename), varid=varid, output = paste0(endpath,filename), newvarid=newvarid, compression = 9, depth =c(0,0.5))
+      nc_subset_v2(filename=file.path(input_path,filename), varid=varid, output = file.path(output_path,filename), newvarid=newvarid, compression = 9, depth =c(0,0.5))
       
       message("Succes Spatial Subsetting (upper layer) for : ", filename)
     }
   }
   
-  dir.create(paste0(outputDir,"temp_unlim"))
-  unlim_path = paste0(outputDir,"temp_unlim/")
-  list_filename = list.files(path=endpath)
+  input_path = output_path
+  
+  dir.create(file.path(folder_path,"unlim"))
+  output_path = file.path(folder_path,"unlim")
+  
+  list_filename = list.files(path=input_path)
+  
   for (filename in list_filename){
-    
     message("Start Processing Dimension for : ", filename)
     
-    nc_unlim_v2(filename = paste0(endpath,filename), unlim = "time", output = paste0(unlim_path, filename))
+    nc_unlim_v2(filename = file.path(input_path,filename), unlim = "time", output = file.path(output_path,filename))
     
     message("Succes ! Processing Dimension for : ", filename)
+    
+    #file.rename(file.path(input_path,list_filename[-1]), file.path(output_path, list_filename[-1]))
   }
-
- 
-   
+  
   ###   Concatenation for a Variable for GLORYS files (.nc)  ###
   
-
-
-  list_filename= list.files(path=unlim_path)
-  output = paste0(outputDir,"glorys-v1-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
-  nc_rcat_v2(filenames = paste0(unlim_path,list_filename),varid=newvarid,output)
+  input_path = output_path
+  
+  list_filename= list.files(path=input_path)
+  
+  output_file = paste0("glorys-v1-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
+  output = file.path(outputDir,output_file)
+  nc_rcat_v2(filenames = file.path(input_path,list_filename),varid=newvarid,output)
   message("Succes !! Concatenation for the variable : ",varid)
-
-  # unlink(x = paste0(outputDir,"temp"), recursive = TRUE)
-  # unlink(x = paste0(outputDir,"temp_unlim"), recursive = TRUE)
-  # unlink(x = paste0(outputDir,"temp_spa"), recursive = TRUE)
   
   return(invisible(TRUE))
   
 }
- 
+
 
 
 

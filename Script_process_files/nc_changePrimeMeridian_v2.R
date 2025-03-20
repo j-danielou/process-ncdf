@@ -35,7 +35,7 @@ findPrimeMeridian = function(x) {
   return(NULL)
 }
 
-checkVarid = function(varid, nc) {
+.checkVarid = function(varid, nc) {
   
   if(missing(varid)) varid = NA
   
@@ -76,7 +76,7 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
   nc = nc_open(filename)
   on.exit(nc_close(nc))
   
-  varid = checkVarid(varid=varid, nc=nc)
+  varid = .checkVarid(varid=varid, nc=nc)
   gloAtt = ncatt_get(nc, varid = 0)
   varAtt = ncatt_get(nc, varid = varid)
   varAtt[["_FillValue"]] = NULL
@@ -142,7 +142,7 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
   
   if(!bigData) {
     
-    newvar = c(list(x=ncvar_get(nc, varid, collapse_degen=FALSE),
+    newvar = c(list(x=ncvar_get(nc, varid, collapse_degen=FALSE, raw_datavals = TRUE),
                     drop=FALSE), rep(TRUE, ndim))
     newvar[[MARGIN+2]] = ind
     newvar = do.call('[', newvar)
@@ -161,7 +161,7 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
       count[useDim] = counts[i]
       
       newvar = c(list(x=ncvar_get(nc, varid, collapse_degen=FALSE,
-                                  start=start, count=count),
+                                  start=start, count=count, raw_datavals = TRUE),
                       drop=FALSE), rep(TRUE, ndim))
       newvar[[MARGIN+2]] = ind
       newvar = do.call('[', newvar)
@@ -173,9 +173,10 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
       setTxtProgressBar(pb, i/npiece)
       
     }
-    ncatt_put_all(ncNew, varid=0, attval=gloAtt)
-    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
   }
+  
+  ncatt_put_all(ncNew, varid=0, attval=gloAtt)
+  ncatt_put_all(ncNew, varid=varid, attval=varAtt)
   
   nc_close(ncNew)
   nc_close(nc)
