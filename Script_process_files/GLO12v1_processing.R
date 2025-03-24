@@ -38,12 +38,12 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   
   for (filename in list_filename){
     message("Start of Variable Extraction for the : ", filename)
-    GLORYS=paste0("GLO12v1_",ifelse(varid_name=="thetao","sst",varid),"_temp")
-    GLORYS = paste0(GLORYS,"_",count,".nc")
-    output= file.path(output_path,GLORYS)
+    GLORYS = paste0("GLO12v1_", ifelse(varid_name == "thetao", "sst", varid), "_temp")
+    GLORYS = paste0(GLORYS, "_", sprintf("%04d", count), ".nc")
+    output = file.path(output_path,GLORYS)
     nc_extract_v2(file.path(path,filename),varid,output)
     message("Variable Extracted for the : ", filename)
-    count= count + 1
+    count = count + 1
   }
   
   if (!meridian == "center"){
@@ -123,7 +123,7 @@ GLORYS12v1_process = function(path, list_filename, varid, newvarid, domain, temp
   
   input_path = output_path
   
-  list_filename= list.files(path=input_path)
+  list_filename = list.files(path=input_path)
   
   output_file = paste0("glorys-v1-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
   output = file.path(outputDir,output_file)
