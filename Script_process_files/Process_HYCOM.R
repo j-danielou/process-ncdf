@@ -6,7 +6,7 @@ source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/HYCOM_proce
 path = "Y:/HYCOM/datasets/GLBv0.08/expt_53.X/meanstd/netcdf/"
 pattern = "GLBv0\\.08_53X_archMN\\.\\d{4}_\\d{2}_ts3z\\.nc$"
 list_filename = list.files(path= path, pattern = pattern)
-#list_filename = list_filename[1:12]
+#list_filename = list_filename[1:3]
 varid = "water_temp"
 newvarid ="sst"
 domain = "southpacific"
@@ -21,13 +21,13 @@ HYCOM3.1_process(path, list_filename, varid, newvarid, domain, temp, outputDir, 
 
 
 
-xx = nc_open("Y:/BRAN/BRAN2020/month/ocean_temp_mth_2015_04.nc")
+xx = nc_open("C:/Users/jdanielou/Desktop/gofs-3.1-southpacific-sst-monthly-199401-201512.nc")
 print(xx)
 
-xx_test = ncvar_get(xx, 'temp', verbose = TRUE)
+xx_test = ncvar_get(xx, 'sst', verbose = TRUE)
 
-lon = ncvar_get(xx, "xt_ocean")
-lat = ncvar_get(xx, "yt_ocean")
+lon = ncvar_get(xx, "lon")
+lat = ncvar_get(xx, "lat")
 
 x11()
 image.plot(lon,lat,xx_test[,,1])
