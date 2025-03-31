@@ -3,7 +3,7 @@ nc_unlim_v2 = function(filename, unlim, output=NULL) {
   if(is.null(output)) output = filename
   outputTemp = paste(output, ".temp", sep="")
   nc = nc_open(filename)
-  gloAtt = ncatt_get(nc, varid = 0)
+  globalAtt = ncatt_get(nc, varid = 0)
 
   on.exit(nc_close(nc))
   
@@ -27,7 +27,10 @@ nc_unlim_v2 = function(filename, unlim, output=NULL) {
     ncatt_put_all(ncNew, varid=iVar, attval=varAtt)
   }
   
-  ncatt_put_all(ncNew, varid=0, attval=gloAtt)
+  if (length(globalAtt)!=0){
+    ncatt_put_all(ncNew, varid=0, attval=globalAtt)
+    
+  }
   nc_close(ncNew)
   
   renameFlag = file.rename(outputTemp, output)

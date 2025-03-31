@@ -5,7 +5,7 @@ source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/OISSTv2r1_p
 
 path = "Y:/OISST/v2.1/"
 list_filename = list.files(path= path, pattern = "\\.nc4")
-list_filename = list_filename[1:244]
+#list_filename = list_filename[1:244]
 varid = "sst"
 newvarid ="sst"
 domain = "southpacific"
@@ -22,7 +22,7 @@ file_list = list.files(path = "C:/Users/jdanielou/Desktop/", pattern = "oisst", 
 nc_rcat_v2(file_list, varid ="sss", output = "Z:/reanalysis/regional/southpacific/oisst-v2.1/")
 
 
-data = nc_open(filename = "Y:/OISST/v2.1/oisst-avhrr-v02r01.198211.nc4")
+data = nc_open(filename = "C:/Users/jdanielou/Desktop/oisst-v2r1-southpacific-sst-monthly-198109-202203.nc")
 print(data)
 
 xx_test = ncvar_get(data, 'sst', verbose = FALSE)
@@ -31,6 +31,6 @@ lon = ncvar_get(data, "lon")
 lat = ncvar_get(data, "lat")
 
 x11()
-image.plot(lon,lat,xx_test)
+image.plot(lon,lat,xx_test[,,185])
 
 nc_close(data)

@@ -77,7 +77,7 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
   on.exit(nc_close(nc))
   
   varid = .checkVarid(varid=varid, nc=nc)
-  gloAtt = ncatt_get(nc, varid = 0)
+  globalAtt = ncatt_get(nc, varid = 0)
   varAtt = ncatt_get(nc, varid = varid)
   varAtt[["_FillValue"]] = NULL
   
@@ -174,16 +174,27 @@ nc_changePrimeMeridian_v2 = function(filename, output, varid=NA, MARGIN=1, prime
       
     }
   }
-  
-  ncatt_put_all(ncNew, varid=0, attval=gloAtt)
-  ncatt_put_all(ncNew, varid=varid, attval=varAtt)
-  
-  nc_close(ncNew)
-  nc_close(nc)
-  
-  if(file.exists(output)) file.remove(output)
-  file.rename(tmp, output)
+  if (length(globalAtt)==0){
+    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
+    
+    nc_close(ncNew)
+    nc_close(nc)
+    
+    if(file.exists(output)) file.remove(output)
+    file.rename(tmp, output)
+    
+  } else {
+    ncatt_put_all(ncNew, varid=0, attval=globalAtt)
+    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
+    
+    nc_close(ncNew)
+    nc_close(nc)
+    
+    if(file.exists(output)) file.remove(output)
+    file.rename(tmp, output)
+  }
   
   return(invisible(output))
   
 }
+

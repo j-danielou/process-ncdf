@@ -98,8 +98,16 @@ nc_subset_v2 = function(filename, varid, output, newvarid, compression,
   globalAtt$history = paste(c(oldHistory, newHistory), collapse="\n")
   
   # copy global attributes from original nc file.
+
   ncatt_put_all(ncNew, varid=0, attval=globalAtt)
   ncatt_put_all(ncNew, varid=newvarid, attval=varAtt)
+
   
   return(invisible(output))
 }
+
+
+
+
+
+

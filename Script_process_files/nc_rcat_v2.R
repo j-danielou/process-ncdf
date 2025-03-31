@@ -3,7 +3,7 @@ nc_rcat_v2 = function(filenames, varid, output) {
   # check for unlim
   for(i in seq_along(filenames)) {
     nc = nc_open(filenames[i])
-    gloAtt = ncatt_get(nc, varid = 0)
+    globalAtt = ncatt_get(nc, varid = 0)
     varAtt = ncatt_get(nc, varid = varid)
     varAtt[["_FillValue"]] = NULL
     if(!any(ncdim_isUnlim(nc))) stop("Files don't have an unlimited dimension.")
@@ -30,8 +30,16 @@ nc_rcat_v2 = function(filenames, varid, output) {
     ncvar_put(ncNew, varid=unlimDim, ncvar_get(nc, varid=unlimDim),
               start=start[which(isUnlim)], count=ncSize[which(isUnlim)])
     start = start + ncSize*isUnlim
-    ncatt_put_all(ncNew, varid=0, attval=gloAtt)
-    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
+    if (length(globalAtt)==0){
+      
+      ncatt_put_all(ncNew, varid=newvarid, attval=varAtt)
+      
+    }else{
+      
+      ncatt_put_all(ncNew, varid=0, attval=globalAtt)
+      ncatt_put_all(ncNew, varid=newvarid, attval=varAtt)
+    }
+    
     nc_close(nc)
   }
   nc_close(ncNew)

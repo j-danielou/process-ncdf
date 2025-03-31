@@ -2,7 +2,7 @@ library(nctools) # install_github("roliveros-ramos/nctools")
 #source("temporary_functions.R")
 
 
-OISSTv2.1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end, tempdir=NULL) {
+OISSTv2r1_process = function(path, list_filename, varid, newvarid, domain, temp, outputDir, meridian, start, end, tempdir=NULL) {
   
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_extract_v2.R")
   source("C:/Users/jdanielou/Desktop/process-ncdf/Script_process_files/nc_changePrimeMeridian_v2.R")
