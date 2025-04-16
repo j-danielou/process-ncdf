@@ -33,7 +33,7 @@ lat = ncvar_get(xx, "lat")
 x11()
 image.plot(lon,lat,xx_test[,,1])
 
-nc_close(xx)
+nc_close(xx) #close
          
          
          
