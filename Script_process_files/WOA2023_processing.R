@@ -23,7 +23,7 @@ WOA2023_process = function(path, list_filename, varid, newvarid, domain, temp, o
   # nc_apply()
   
   if (is.null(newvarid) || missing(newvarid)) {
-    newvarid <- varid
+    newvarid = varid
   }
   
   dir.create(file.path(tempdir,"temp"))
@@ -125,7 +125,7 @@ WOA2023_process = function(path, list_filename, varid, newvarid, domain, temp, o
   
   list_filename = list.files(path=input_path)
   
-  output_file = paste0("woa-2023-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
+  output_file = paste0("woa-23-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
   output = file.path(outputDir,output_file)
   nc_rcat_v2(filenames = file.path(input_path,list_filename),varid=newvarid,output)
   message("Succes !! Concatenation for the variable : ",varid)
