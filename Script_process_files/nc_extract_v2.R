@@ -11,12 +11,12 @@ nc_extract_v2 = function(filename, varid, output) {
   ncvar_put(ncNew, varid, ncvar_get(nc, varid, collapse_degen=FALSE, raw_datavals = TRUE))
   if (length(globalAtt)==0){
     
-    ncatt_put_all(ncNew, varid=newvarid, attval=varAtt)
+    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
     
   }else{
     
     ncatt_put_all(ncNew, varid=0, attval=globalAtt)
-    ncatt_put_all(ncNew, varid=newvarid, attval=varAtt)
+    ncatt_put_all(ncNew, varid=varid, attval=varAtt)
   }
   
   nc_close(ncNew)
