@@ -83,7 +83,7 @@ OISSTv2r1_process = function(path, list_filename, varid, newvarid, domain, temp,
     for (filename in list_filename){
       message("Start of the Spatial Subsetting for : ", filename)
       
-      nc_subset_v2(filename=file.path(input_path,filename), varid=varid, output = file.path(output_path,filename), newvarid=newvarid, compression = 9, lat=c(-70,10), lon=c(120,300))
+      nc_subset_v2(filename=file.path(input_path,filename), varid=varid, output = file.path(output_path,filename), newvarid=newvarid, compression = 9, lat=c(-60,10), lon=c(120,291))
       
       message("Succes Spatial Subsetting for : ", filename)
     }
@@ -126,7 +126,7 @@ OISSTv2r1_process = function(path, list_filename, varid, newvarid, domain, temp,
   
   list_filename= list.files(path=input_path)
   
-  output_file = paste0("oisst-v2r1-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
+  output_file = paste0("esacci-v5.5-",domain,"-",newvarid,"-",temp,"-",start,"-",end,".nc")
   output = file.path(outputDir,output_file)
   nc_rcat_v2(filenames = file.path(input_path,list_filename),varid=newvarid,output)
   message("Succes !! Concatenation for the variable : ",varid)

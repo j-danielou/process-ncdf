@@ -33,7 +33,7 @@ nc_rcat_v2 = function(filenames, varid, output) {
     nc_close(nc)
   }
   ncatt_put_all(ncNew, varid=0, attval=gloAtt)
-  ncatt_put_all(ncNew, varid=varid, attval=varAtt)
+  # ncatt_put_all(ncNew, varid=varid, attval=varAtt)
   nc_close(ncNew)
   return(invisible(output))
 }

@@ -76,7 +76,7 @@ nc_subset_v2 = function(filename, varid, output, newvarid, compression,
   
   newVar = ncvar_def(name=newVar$name, units = newVar$units,
                      missval = newVar$missval, dim = newVar$dim,
-                     longname = newVar$longname, prec = newVar$prec,
+                     longname = newVar$longname, prec = ifelse(newVar$prec == "int", "float", newVar$prec),
                      compression = newVar$compression)
   
   ncNew = nc_create(filename=output, vars=newVar, force_v4=force_v4)
